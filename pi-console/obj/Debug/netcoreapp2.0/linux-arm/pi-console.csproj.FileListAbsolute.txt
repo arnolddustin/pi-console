@@ -1,0 +1,13 @@
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/libhostpolicy.so
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/libhostfxr.so
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/pi-console
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/pi-console.deps.json
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/pi-console.runtimeconfig.json
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/pi-console.runtimeconfig.dev.json
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/pi-console.dll
+/Users/dustinarnold/Documents/Projects/pi/pi-console/bin/Debug/netcoreapp2.0/linux-arm/pi-console.pdb
+/Users/dustinarnold/Documents/Projects/pi/pi-console/obj/Debug/netcoreapp2.0/linux-arm/pi-console.csproj.CoreCompileInputs.cache
+/Users/dustinarnold/Documents/Projects/pi/pi-console/obj/Debug/netcoreapp2.0/linux-arm/pi-console.AssemblyInfoInputs.cache
+/Users/dustinarnold/Documents/Projects/pi/pi-console/obj/Debug/netcoreapp2.0/linux-arm/pi-console.AssemblyInfo.cs
+/Users/dustinarnold/Documents/Projects/pi/pi-console/obj/Debug/netcoreapp2.0/linux-arm/pi-console.dll
+/Users/dustinarnold/Documents/Projects/pi/pi-console/obj/Debug/netcoreapp2.0/linux-arm/pi-console.pdb
