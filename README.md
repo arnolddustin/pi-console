@@ -1,5 +1,5 @@
 # pi-console
-Experimenting with dotnetcore on the Raspberry Pi
+.NET Core 2.0 console application that uses the library to interact with the Raspberry Pi.
 
 # publishing
 The `publish.sh` script builds the console app and uses `scp` to copy the built output to a pie with hostname `raspberrypi` and user `pi`.
