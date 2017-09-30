@@ -1,17 +1,28 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using pi_dotnetcore;
+using pi_dotnetcore.Gpio;
 
 namespace pi_console
 {
     class Program
     {
+        static IGpio _gpio;
+
         static void Main(string[] args)
         {
-            if (args == null || args.Length < 2)
+            Console.WriteLine("Raspberry Pi Console Application\n");
+            
+            if (args == null || args.Length < 1)
             {
                 Console.WriteLine("missing required parameter.\n");
-                Console.WriteLine("usage: pi-console status|on|off <pin>");
+                Console.WriteLine("usage: pi-console list|init|deinit|status|on|off <pin>");
+                Console.WriteLine("\n  ex: list all initialized pins:");
+                Console.WriteLine("  pi-console list");
+                Console.WriteLine("\n  ex: initialize pin 12:");
+                Console.WriteLine("  pi-console init 12");
+                Console.WriteLine("\n  ex: de-initialize pin 12:");
+                Console.WriteLine("  pi-console deinit 12");
                 Console.WriteLine("\n  ex: get status of pin 12:");
                 Console.WriteLine("  pi-console status 12");
                 Console.WriteLine("\n  ex: turn pin 16 on");
@@ -23,10 +34,24 @@ namespace pi_console
 
             try
             {
+                _gpio = new RaspberryPiGpio();
+
                 switch (args[0].ToLower())
                 {
+                    case "list":
+                        List();
+                        return;
+
                     case "status":
                         Status(args);
+                        return;
+
+                    case "init":
+                        Init(args);
+                        return;
+
+                    case "deinit":
+                        DeInit(args);
                         return;
 
                     case "on":
@@ -41,13 +66,46 @@ namespace pi_console
                         throw new ArgumentOutOfRangeException("command", args[0], "unknown command.");
                 }
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
             }
 
             Console.WriteLine("Done.");
+        }
+        static void List()
+        {
+            var pins = _gpio.GetInitializedPins().ToList();
+
+            Console.WriteLine("No pins are initialized.");
+
+            pins.ForEach(pin =>
+                Console.WriteLine("Pin {0} (output: {1}, on: {2})", pin.number, pin.output, pin.on)
+            );
+        }
+        static void Init(string[] args)
+        {
+            int number;
+            if (!int.TryParse(args[1], out number))
+            {
+                throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+            }
+
+            _gpio.InitPin(number, true);
+            Console.WriteLine(string.Format("Pin {0} initialized", number));
+        }
+
+        static void DeInit(string[] args)
+        {
+            int number;
+            if (!int.TryParse(args[1], out number))
+            {
+                throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+            }
+
+            _gpio.DeInitPin(number);
+            Console.WriteLine(string.Format("Pin {0} deinitialized", number));
         }
 
         static void Status(string[] args)
@@ -58,7 +116,8 @@ namespace pi_console
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
             }
 
-            Console.WriteLine(new Gpio().Get(number).ToString());
+            var pin = _gpio.GetPin(number);
+            Console.WriteLine("Pin {0} (output: {1}, on: {2})", pin.number, pin.output, pin.on);
         }
 
         static void On(string[] args)
@@ -69,7 +128,7 @@ namespace pi_console
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
             }
 
-            new Gpio().Set(number, GpioDirection.Out, true);
+            _gpio.SetPin(number, true);
             Console.WriteLine(string.Format("Pin {0} turned on", number));
         }
 
@@ -81,7 +140,7 @@ namespace pi_console
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
             }
 
-            new Gpio().Set(number, GpioDirection.Out, false);
+            _gpio.SetPin(number, false);
             Console.WriteLine(string.Format("Pin {0} turned off", number));
         }
     }
