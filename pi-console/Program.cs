@@ -12,15 +12,18 @@ namespace pi_console
         static void Main(string[] args)
         {
             Console.WriteLine("Raspberry Pi Console Application\n");
-            
+
             if (args == null || args.Length < 1)
             {
                 Console.WriteLine("missing required parameter.\n");
                 Console.WriteLine("usage: pi-console list|init|deinit|status|on|off <pin>");
                 Console.WriteLine("\n  ex: list all initialized pins:");
                 Console.WriteLine("  pi-console list");
-                Console.WriteLine("\n  ex: initialize pin 12:");
+                Console.WriteLine("\n  ex: initialize pin 12 for output:");
                 Console.WriteLine("  pi-console init 12");
+                Console.WriteLine("  pi-console init 12 output");
+                Console.WriteLine("\n  ex: initialize pin 12 for input:");
+                Console.WriteLine("  pi-console init 12 input");
                 Console.WriteLine("\n  ex: de-initialize pin 12:");
                 Console.WriteLine("  pi-console deinit 12");
                 Console.WriteLine("\n  ex: get status of pin 12:");
@@ -88,11 +91,19 @@ namespace pi_console
         {
             int number;
             if (!int.TryParse(args[1], out number))
-            {
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+
+            bool isoutput = true;
+            if (args.Length > 2)
+            {
+                var direction = args[2].ToLower().Trim();
+                if (!direction.Equals("input") && !direction.Equals("output"))
+                    throw new ArgumentOutOfRangeException("direction", args[2], "argument 3 must be either \"input\" or \"output\"");
+
+                isoutput = direction.Equals("output");
             }
 
-            _gpio.InitPin(number, true);
+            _gpio.InitPin(number, isoutput);
             Console.WriteLine(string.Format("Pin {0} initialized", number));
         }
 
