@@ -3,7 +3,7 @@
 
 ## getting started
 * clone this repostory: `git clone https://github.com/arnolddustin/pi-console.git`
-* configure your Raspberry Pi for running dotnet.  full instructions [can be found here](https://github.com/arnolddustin/pi-dotnetcore#getting-started-guide).
+* configure your Raspberry Pi for running dotnet.  full instructions can be found in the [pi-dotnet core README](https://github.com/arnolddustin/pi-dotnetcore#getting-started-guide).
 * build the console application and deploy it to the Raspberry Pi by running the publish script: `./publish.sh`. The script builds the dotnetcore 2.0 app for the **linux-arm platform** then uses `rsync` to copy the build output to a Pi listening at at the login/host `pi@raspberrypi`.
 
 ## running on the pi
