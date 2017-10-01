@@ -8,8 +8,9 @@
 
 ## running on the pi
 * connect to the pi over `ssh`.
-* change to the `pi-console` directory
-* start the console app by running `sudo ./pi-console`.  this will display the set of commands available
+* make the `pi-console` command available from anywhere by creating a symbolic link to it: `sudo ln -s ~/pi-console/pi-console /usr/local/bin`
+* start the console app by running `sudo pi-console`.  this will display the set of commands available.
+    * running with `sudo` is required because elevated privileges are required to write to the GPIO system on the Raspberry Pi
 
 ## available commands
 * `list` - lists all active GPIO pins
