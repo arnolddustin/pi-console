@@ -13,7 +13,7 @@
 
 ## available commands
 * `list` - lists all active GPIO pins
-* `init <pinnumber>` - initializes the specified GPIO pin
+* `init <pinnumber> [input|output]` - initializes the specified GPIO pin for input or output. not specifying `input` or `output` will default to `output`.
 * `deinit <pinnumber>` - deinitializes the specified GPIO pin
 * `status <pinnumber>` - displays the current state of the specified GPIO pin (pin must be activated first)
 * `on <pinnumber>` - turns on the specified GPIO pin (pin must be activated first)
