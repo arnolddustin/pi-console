@@ -7,7 +7,7 @@ namespace pi_console
 {
     class Program
     {
-        static IGpio _gpio;
+        static IGpioAdapter _gpio;
 
         static void Main(string[] args)
         {
@@ -16,14 +16,13 @@ namespace pi_console
             if (args == null || args.Length < 1)
             {
                 Console.WriteLine("missing required parameter.\n");
-                Console.WriteLine("usage: pi-console list|init|deinit|status|on|off <pin>");
-                Console.WriteLine("\n  ex: list all initialized pins:");
-                Console.WriteLine("  pi-console list");
-                Console.WriteLine("\n  ex: initialize pin 12 for output:");
+                Console.WriteLine("usage: pi-console init|deinit|status|on|off|photo <pin>");
+                Console.WriteLine("\n  ex: initialize pin 12:");
                 Console.WriteLine("  pi-console init 12");
-                Console.WriteLine("  pi-console init 12 output");
-                Console.WriteLine("\n  ex: initialize pin 12 for input:");
-                Console.WriteLine("  pi-console init 12 input");
+                Console.WriteLine("\n  ex: set pin 12 to output:");
+                Console.WriteLine("  pi-console output 12");
+                Console.WriteLine("\n  ex: set pin 12 to input:");
+                Console.WriteLine("  pi-console input 12");
                 Console.WriteLine("\n  ex: de-initialize pin 12:");
                 Console.WriteLine("  pi-console deinit 12");
                 Console.WriteLine("\n  ex: get status of pin 12:");
@@ -32,25 +31,31 @@ namespace pi_console
                 Console.WriteLine("  pi-console on 16");
                 Console.WriteLine("\n  ex: turn pin 18 off");
                 Console.WriteLine("  pi-console off 18");
+                Console.WriteLine("\n  ex: read the photo sensor on pin 18");
+                Console.WriteLine("  pi-console photo 18");
                 return;
             }
 
             try
             {
-                _gpio = new RaspberryPiGpio();
+                _gpio = new FileSystemGpioAdapter();
 
                 switch (args[0].ToLower())
                 {
-                    case "list":
-                        List();
-                        return;
-
                     case "status":
                         Status(args);
                         return;
 
                     case "init":
                         Init(args);
+                        return;
+
+                    case "input":
+                        Input(args);
+                        return;
+
+                    case "output":
+                        Output(args);
                         return;
 
                     case "deinit":
@@ -65,6 +70,14 @@ namespace pi_console
                         Off(args);
                         return;
 
+                    case "photo":
+                        Photo(args);
+                        return;
+
+                    case "photoloop":
+                        Photoloop(args);
+                        return;
+
                     default:
                         throw new ArgumentOutOfRangeException("command", args[0], "unknown command.");
                 }
@@ -72,38 +85,19 @@ namespace pi_console
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
             }
 
             Console.WriteLine("Done.");
         }
-        static void List()
-        {
-            var pins = _gpio.GetInitializedPins().ToList();
 
-            Console.WriteLine("No pins are initialized.");
-
-            pins.ForEach(pin =>
-                Console.WriteLine("Pin {0} (output: {1}, on: {2})", pin.number, pin.output, pin.on)
-            );
-        }
         static void Init(string[] args)
         {
             int number;
             if (!int.TryParse(args[1], out number))
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
 
-            bool isoutput = true;
-            if (args.Length > 2)
-            {
-                var direction = args[2].ToLower().Trim();
-                if (!direction.Equals("input") && !direction.Equals("output"))
-                    throw new ArgumentOutOfRangeException("direction", args[2], "argument 3 must be either \"input\" or \"output\"");
-
-                isoutput = direction.Equals("output");
-            }
-
-            _gpio.InitPin(number, isoutput);
+            _gpio.InitPin(number);
             Console.WriteLine(string.Format("Pin {0} initialized", number));
         }
 
@@ -123,12 +117,36 @@ namespace pi_console
         {
             int number;
             if (!int.TryParse(args[1], out number))
+                throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+
+            var direction = _gpio.GetDirection(number);
+            var value = _gpio.GetValue(number);
+
+            Console.WriteLine("Pin {0} [direction: {1}, value: {2}]", number, direction, value);
+        }
+
+        static void Input(string[] args)
+        {
+            int number;
+            if (!int.TryParse(args[1], out number))
             {
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
             }
 
-            var pin = _gpio.GetPin(number);
-            Console.WriteLine("Pin {0} (output: {1}, on: {2})", pin.number, pin.output, pin.on);
+            _gpio.SetDirection(number, PinDirection.Input);
+            Console.WriteLine(string.Format("Pin {0} set to input", number));
+        }
+
+        static void Output(string[] args)
+        {
+            int number;
+            if (!int.TryParse(args[1], out number))
+            {
+                throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+            }
+
+            _gpio.SetDirection(number, PinDirection.Output);
+            Console.WriteLine(string.Format("Pin {0} set to output", number));
         }
 
         static void On(string[] args)
@@ -139,7 +157,7 @@ namespace pi_console
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
             }
 
-            _gpio.SetPin(number, true);
+            _gpio.SetValue(number, PinValue.On);
             Console.WriteLine(string.Format("Pin {0} turned on", number));
         }
 
@@ -151,8 +169,62 @@ namespace pi_console
                 throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
             }
 
-            _gpio.SetPin(number, false);
+            _gpio.SetValue(number, PinValue.Off);
             Console.WriteLine(string.Format("Pin {0} turned off", number));
+        }
+
+        static void Photo(string[] args)
+        {
+            int number;
+            if (!int.TryParse(args[1], out number))
+                throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+
+            _gpio.DeInitPin(number);
+            _gpio.InitPin(number);
+            _gpio.SetDirection(number, PinDirection.Output);
+            _gpio.SetValue(number, PinValue.Off);
+            _gpio.GetValue(number);
+
+            _gpio.SetDirection(number, PinDirection.Input);
+            var counter = 0;
+            while (true)
+            {
+                if (_gpio.GetValue(number) == PinValue.On)
+                    break;
+
+                counter++;
+            }
+
+            Console.WriteLine(string.Format("Pin {0} photosensor reading is {1}", number, counter));
+        }
+
+        static void Photoloop(string[] args)
+        {
+            int number;
+            if (!int.TryParse(args[1], out number))
+                throw new ArgumentOutOfRangeException("number", args[1], "argument 2 must be a number");
+
+            while (true)
+            {
+                _gpio.DeInitPin(number);
+                _gpio.InitPin(number);
+                _gpio.SetDirection(number, PinDirection.Output);
+                _gpio.SetValue(number, PinValue.Off);
+                _gpio.GetValue(number);
+
+                _gpio.SetDirection(number, PinDirection.Input);
+                var counter = 0;
+                while (true)
+                {
+                    if (_gpio.GetValue(number) == PinValue.On)
+                        break;
+
+                    counter++;
+                }
+
+                Console.WriteLine(string.Format("Pin {0} photosensor reading is {1}", number, counter));
+                Task.Delay(100).Wait();
+            }
         }
     }
 }
