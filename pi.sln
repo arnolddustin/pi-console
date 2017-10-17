@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pi-console", "pi-console\pi-console.csproj", "{191A6F9C-3B63-4EEF-8FD5-504EBB012E2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pi", "pi\pi.csproj", "{191A6F9C-3B63-4EEF-8FD5-504EBB012E2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pi-console.tests", "pi-console.tests\pi-console.tests.csproj", "{103C8BB0-F6EF-4FB3-ABDC-6E46CA343BAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pi.tests", "pi.tests\pi.tests.csproj", "{103C8BB0-F6EF-4FB3-ABDC-6E46CA343BAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
