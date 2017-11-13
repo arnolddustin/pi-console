@@ -8,14 +8,16 @@
 
 ## running on the pi
 * connect to the pi over `ssh`.
-* make the `pi-console` command available from anywhere by creating a symbolic link to it: `sudo ln -s ~/pi-console/pi-console /usr/local/bin`
-* start the console app by running `sudo pi-console`.  this will display the set of commands available.
-    * running with `sudo` is required because elevated privileges are required to write to the GPIO system on the Raspberry Pi
+* make the `pi` command available from anywhere by creating a symbolic link to it: `sudo ln -s ~/pi/pi /usr/local/bin`
+* start the console app by running `sudo pi`.  this will display the set of commands available.  running with `sudo` is required because elevated privileges are required to write to the GPIO system on the Raspberry Pi
 
-## available commands
-* `list` - lists all active GPIO pins
-* `init <pinnumber> [input|output]` - initializes the specified GPIO pin for input or output. not specifying `input` or `output` will default to `output`.
-* `deinit <pinnumber>` - deinitializes the specified GPIO pin
-* `status <pinnumber>` - displays the current state of the specified GPIO pin (pin must be activated first)
-* `on <pinnumber>` - turns on the specified GPIO pin (pin must be activated first)
-* `off <pinnumber>` - turns off the specified GPIO pin (pin must be activated first)
+## wiringPi
+Commands in the `pi.wiringPi.commands` namespace use the [wiringPi library](http://www.wiringPi.com) on the RaspberryPi.  To install support for these commands:
+* Follow the wiringPi [installation instructions](http://wiringpi.com/download-and-install/) to install wiringPi
+* Verify that wiringPi is installed correctly by running `gpio readall`
+* Open the folder where you cloned the wiringPi git repository and run `./build`
+* Create shared libraries that will be used by the wiringPi wrapper by running the following commands:
+  * `cc -shared wiringPi.o -o libwiringPi.so`
+  * `cc -shared wiringPiI2C.o -o libwiringPiI2C.so`
+  * `cc -shared wiringPiSPI.o -o libwiringPiSPI.so`
+

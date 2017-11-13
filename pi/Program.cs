@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using pi_dotnetcore.Gpio;
 using pi.commands;
+using pi.wiringPi.commands;
 
 namespace pi
 {

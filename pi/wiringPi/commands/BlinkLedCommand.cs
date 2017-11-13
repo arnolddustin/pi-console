@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WiringPi;
 
-namespace pi.commands
+namespace pi.wiringPi.commands
 {
     public class BlinkLedCommand : ICommand
     {

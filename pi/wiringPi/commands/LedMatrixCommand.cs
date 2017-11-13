@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WiringPi;
 
-namespace pi.commands
+namespace pi.wiringPi.commands
 {
     /// <summary>
     /// Scrolls a message across an LED matrix display
