@@ -28,6 +28,7 @@ namespace pi
                 .AddTransient<ICommand, PhotoCommand>()
                 .AddTransient<ICommand, PhotoloopCommand>()
                 .AddTransient<ICommand, BlinkLedCommand>()
+                .AddTransient<ICommand, PulseLedCommand>()
                 .AddTransient<ICommand, LedMatrixCommand>()
                 .BuildServiceProvider();
 
