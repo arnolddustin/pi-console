@@ -7,6 +7,9 @@ using pi.wiringPi.commands;
 
 namespace pi
 {
+    /// <summary>
+    /// pi console application
+    /// </summary>
     class Program
     {
         static void Main(string[] args)

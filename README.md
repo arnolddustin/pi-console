@@ -12,7 +12,7 @@
 * start the console app by running `sudo pi`.  this will display the set of commands available.  running with `sudo` is required because elevated privileges are required to write to the GPIO system on the Raspberry Pi
 
 ## wiringPi
-Commands in the `pi.wiringPi.commands` namespace use the [wiringPi library](http://www.wiringPi.com) on the RaspberryPi.  To install support for these commands:
+Commands in the `pi.wiringPi.commands` namespace use .NET PInvoke to call the [wiringPi library](http://www.wiringPi.com) on the RaspberryPi.  To install support for these commands:
 * Follow the wiringPi [installation instructions](http://wiringpi.com/download-and-install/) to install wiringPi
 * Verify that wiringPi is installed correctly by running `gpio readall`
 * Open the folder where you cloned the wiringPi git repository and run `./build`
@@ -21,3 +21,5 @@ Commands in the `pi.wiringPi.commands` namespace use the [wiringPi library](http
   * `cc -shared wiringPiI2C.o -o libwiringPiI2C.so`
   * `cc -shared wiringPiSPI.o -o libwiringPiSPI.so`
 
+## References
+* The wiringPi wrapper is from [WiringPi.NET](https://github.com/danriches/WiringPi.Net). The original library has some sample code and full Visual Studio instructions.
