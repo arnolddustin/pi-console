@@ -9,10 +9,6 @@ namespace pi.wiringPi.commands
     /// <summary>
     /// Scrolls a message across an LED matrix display
     /// </summary>
-    /// <remarks>
-    /// Adapted from Adeept LED Matrix C sample
-    /// https://github.com/adeept/Adeept_Ultimate_Starter_Kit_C_Code_for_RPi/blob/master/16_ledMatrix/ledMatrix.c
-    /// </remarks>
     public class LedMatrixCommand : ICommand
     {
         #region ICommand Interface
@@ -23,60 +19,49 @@ namespace pi.wiringPi.commands
 
         public void Run(params string[] args)
         {
-             RunCommand();
+            RunCommand();
         }
 
         #endregion
 
-        /// <summary>
-        /// memory clock input (STCP)
-        /// </summary>
+        double SCROLLDELAY = 0.05;
+        const int LOOPS = 4;
         const int RCLK = 0;
-
-        /// <summary>
-        /// shift register clock input (SHCP)
-        /// </summary>
         const int SRCLK = 1;
-
-        /// <summary>
-        /// serial data input
-        /// </summary>
         const int SDI = 2;
 
-        byte[] data = new byte[] {
-                0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00, //NULL
-        		0x00,0x00,0x3C,0x42,0x42,0x3C,0x00,0x00, //0
-        		0x00,0x00,0x00,0x44,0x7E,0x40,0x00,0x00, //1
-        		0x00,0x00,0x44,0x62,0x52,0x4C,0x00,0x00, //2
-        		0x00,0x00,0x78,0x14,0x12,0x14,0x78,0x00, //A
-        		0x00,0x00,0x60,0x90,0x90,0xFE,0x00,0x00, //d
-        		0x00,0x00,0x1C,0x2A,0x2A,0x2A,0x24,0x00, //e
-        		0x00,0x00,0x1C,0x2A,0x2A,0x2A,0x24,0x00, //e
-        		0x00,0x00,0x7E,0x12,0x12,0x0C,0x00,0x00, //p
-        		0x00,0x00,0x08,0x7E,0x88,0x40,0x00,0x00, //t
-        		0x3C,0x42,0x95,0xB1,0xB1,0x95,0x42,0x3C, //:)
-        		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00  //NULL
-            };
+        List<byte> data = new List<byte>();
 
         byte[] tab = new byte[] { 0xfe, 0xfd, 0xfb, 0xf7, 0xef, 0xdf, 0xbf, 0x7f };
+
+        public LedMatrixCommand()
+        {
+            var p = new PixelArt();
+            data.AddRange(p.Get('A'));
+            data.AddRange(p.Get('B'));
+            data.AddRange(p.Get("Jackson"));
+            data.AddRange(p.Get(p.SupportedCharacters()));
+        }
 
         public void RunCommand(params string[] args)
         {
             init();
 
-            while (true)
+            for (int l = 0; l < LOOPS; l++)
             {
-                for (var i = 0; i < data.Length - 8; i++)
+                for (var i = 0; i < data.Count - 8; i++)
                 {
-                    for (var k = 0; k < 3; k++)
+                    var start = DateTime.Now;
+                    while (true)
                     {
                         for (var j = 0; j < 8; j++)
                         {
                             hc595_in(data[i + j]);
                             hc595_in(tab[j]);
                             hc595_out();
-                            Task.Delay(1).Wait();
                         }
+                        if (DateTime.Now > start.AddSeconds(SCROLLDELAY))
+                            break;
                     }
                 }
             }
